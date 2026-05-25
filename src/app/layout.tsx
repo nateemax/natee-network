@@ -14,12 +14,58 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
-          rel="stylesheet"
+        {/* Polyfill for older browsers (WeChat X5 kernel) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // globalThis polyfill
+              if (typeof globalThis === 'undefined') {
+                (function () {
+                  if (typeof self !== 'undefined') { return self; }
+                  if (typeof window !== 'undefined') { return window; }
+                  if (typeof global !== 'undefined') { return global; }
+                  throw new Error('Unable to locate global object');
+                })().globalThis = (function () {
+                  if (typeof self !== 'undefined') { return self; }
+                  if (typeof window !== 'undefined') { return window; }
+                  if (typeof global !== 'undefined') { return global; }
+                  throw new Error('Unable to locate global object');
+                })();
+              }
+            `,
+          }}
         />
+        {/* 使用本地字体，避免微信内置浏览器无法加载外部字体 */}
+        <style>{`
+          @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: local('Inter Light'), local('Inter-Light');
+          }
+          @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: local('Inter Regular'), local('Inter-Regular');
+          }
+          @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 500;
+            font-display: swap;
+            src: local('Inter Medium'), local('Inter-Medium');
+          }
+          @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 600;
+            font-display: swap;
+            src: local('Inter SemiBold'), local('Inter-SemiBold');
+          }
+        `}</style>
       </head>
       <body>
         {/* Background glow orbs */}
