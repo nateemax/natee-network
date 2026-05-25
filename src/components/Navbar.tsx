@@ -11,22 +11,36 @@ const NAV_ITEMS = [
   { label: "关于我", href: "#about" },
 ];
 
-export default function Navbar() {
+interface NavbarProps {
+  activeView?: string;
+  onNavigate?: (view: string) => void;
+}
+
+export default function Navbar({ activeView: propView, onNavigate }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("overview");
   const [menuOpen, setMenuOpen] = useState(false);
+  const active = propView || "overview";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    // 只有总览页才监听 body 滚动来判断 navbar 背景
+    if (active === "overview") {
+      const onScroll = () => setScrolled(window.scrollY > 40);
+      window.addEventListener("scroll", onScroll);
+      onScroll(); // 初始化检查
+      return () => window.removeEventListener("scroll", onScroll);
+    } else {
+      setScrolled(true); // 非总览页始终显示背景
+    }
+  }, [active]);
 
   const handleClick = (href: string) => {
     setMenuOpen(false);
     const id = href.replace("#", "");
-    setActive(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    if (onNavigate) {
+      onNavigate(id);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -54,14 +68,16 @@ export default function Navbar() {
         }}
       >
         {/* Logo */}
-        <a
-          href="#overview"
-          onClick={(e) => { e.preventDefault(); handleClick("#overview"); }}
+        <button
+          onClick={() => handleClick("#overview")}
           style={{
             display: "flex",
             alignItems: "center",
             gap: 10,
-            textDecoration: "none",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
           }}
         >
           <div
@@ -94,7 +110,7 @@ export default function Navbar() {
           >
             知识体系
           </span>
-        </a>
+        </button>
 
         {/* Desktop nav */}
         <div
@@ -108,10 +124,9 @@ export default function Navbar() {
           {NAV_ITEMS.map((item) => {
             const id = item.href.replace("#", "");
             return (
-              <a
+              <button
                 key={item.href}
-                href={item.href}
-                onClick={(e) => { e.preventDefault(); handleClick(item.href); }}
+                onClick={() => handleClick(item.href)}
                 style={{
                   padding: "6px 14px",
                   borderRadius: 8,
@@ -119,9 +134,9 @@ export default function Navbar() {
                   fontWeight: active === id ? 500 : 400,
                   color: active === id ? "var(--foreground)" : "var(--muted-foreground)",
                   background: active === id ? "rgba(255,255,255,0.07)" : "transparent",
-                  textDecoration: "none",
-                  transition: "all 0.15s",
                   border: active === id ? "1px solid var(--border)" : "1px solid transparent",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
                 }}
                 onMouseEnter={(e) => {
                   if (active !== id) {
@@ -137,16 +152,15 @@ export default function Navbar() {
                 }}
               >
                 {item.label}
-              </a>
+              </button>
             );
           })}
         </div>
 
         {/* CTA */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <a
-            href="#about"
-            onClick={(e) => { e.preventDefault(); handleClick("#about"); }}
+          <button
+            onClick={() => handleClick("#about")}
             style={{
               padding: "7px 16px",
               borderRadius: 8,
@@ -154,7 +168,8 @@ export default function Navbar() {
               fontWeight: 500,
               color: "#fff",
               background: "linear-gradient(135deg, #4f8ef7, #a78bfa)",
-              textDecoration: "none",
+              border: "none",
+              cursor: "pointer",
               transition: "opacity 0.15s",
               whiteSpace: "nowrap",
             }}
@@ -162,7 +177,7 @@ export default function Navbar() {
             onMouseLeave={(e) => ((e.target as HTMLElement).style.opacity = "1")}
           >
             联系合作
-          </a>
+          </button>
         </div>
       </div>
 

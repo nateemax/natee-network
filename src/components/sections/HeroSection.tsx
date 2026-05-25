@@ -53,11 +53,19 @@ const MODULES = [
   },
 ];
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onNavigate?: (view: string) => void;
+}
+
+export default function HeroSection({ onNavigate }: HeroSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  const navigateTo = (id: string) => {
+    if (onNavigate) {
+      onNavigate(id);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -111,7 +119,7 @@ export default function HeroSection() {
                 display: "inline-block",
               }}
             />
-            持续更新中 · 2026
+            最后更新 2026-05-24
           </span>
         </div>
 
@@ -165,7 +173,7 @@ export default function HeroSection() {
           }}
         >
           <button
-            onClick={() => scrollTo("idc")}
+            onClick={() => navigateTo("idc")}
             style={{
               padding: "11px 28px",
               borderRadius: 10,
@@ -189,7 +197,7 @@ export default function HeroSection() {
             探索模型体系
           </button>
           <button
-            onClick={() => scrollTo("about")}
+            onClick={() => navigateTo("about")}
             style={{
               padding: "10px 28px",
               borderRadius: 10,
@@ -308,7 +316,7 @@ export default function HeroSection() {
           {MODULES.map((mod, i) => (
             <button
               key={mod.id}
-              onClick={() => scrollTo(mod.id)}
+              onClick={() => navigateTo(mod.id)}
               className="card fade-in-up"
               style={{
                 padding: "24px",

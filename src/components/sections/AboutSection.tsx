@@ -7,14 +7,14 @@ const SOCIALS = [
   { label: "Email", icon: "@", hint: "合作咨询" },
 ];
 
-export default function AboutSection() {
+export default function AboutSection({ standalone }: { standalone?: boolean }) {
   return (
     <section
-      id="about"
+      id={standalone ? undefined : "about"}
       className="section"
       style={{
         padding: "100px 24px",
-        borderTop: "1px solid var(--border)",
+        borderTop: standalone ? "none" : "1px solid var(--border)",
         position: "relative",
       }}
     >

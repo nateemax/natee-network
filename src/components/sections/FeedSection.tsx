@@ -288,7 +288,7 @@ function InfoDetail({ item, open, onClose }: { item: InfoItem | null; open: bool
 
 /* ── 主组件 ────────────────────────────────────────────── */
 
-export default function FeedSection() {
+export default function FeedSection({ standalone }: { standalone?: boolean }) {
   const [activePriority, setActivePriority] = useState<Priority | "all">("all");
   const [detailItem, setDetailItem] = useState<InfoItem | null>(null);
 
@@ -302,7 +302,7 @@ export default function FeedSection() {
   };
 
   return (
-    <section id="feed" className="section" style={{ minHeight: "100vh", padding: "100px 24px", position: "relative", borderTop: "1px solid var(--border)" }}>
+    <section id={standalone ? undefined : "feed"} className="section" style={{ minHeight: "100vh", padding: "100px 24px", position: "relative", borderTop: standalone ? "none" : "1px solid var(--border)" }}>
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 50%, rgba(245,166,35,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
